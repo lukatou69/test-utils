@@ -8,6 +8,14 @@ const phraseType = {
 type PhraseKeyType = keyof typeof phraseType
 type PhraseValueType = typeof phraseType[PhraseKeyType]
 
+const cookieHeaders = (expire: number) => ({
+    httpOnly: true,
+    secure: true,
+    maxAge: expire,
+    sameSite: "strict",
+    path: '/'
+})
+
 
 export class Tokenizator {
 
@@ -43,18 +51,11 @@ export class Tokenizator {
         return Array.from(token).every(hasLetter)
     }
 
-    createCookie(key: string, token: string | null, expire: number): { key: string, value: string, headers: any} {
+    createCookie(key: string, token: string | null, expire: number): { key: string, value: string, headers: any } {
         return {
             key,
             value: token || this.createRandomToken(),
-            headers: {
-                httpOnly: true,
-                secure: true,
-                maxAge: expire,
-                sameSite: "strict",
-                path: '/'
-            }
-
+            headers: cookieHeaders(expire)
         }
     }
 }
